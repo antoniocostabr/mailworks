@@ -1,4 +1,4 @@
-# Gmail Email Sender
+# PyMail
 
 A Python package for sending emails using Gmail's SMTP server. This package provides a simple, secure, and reliable way to send emails through Gmail with support for HTML content, attachments, and multiple recipients.
 
@@ -21,7 +21,7 @@ A Python package for sending emails using Gmail's SMTP server. This package prov
 ```bash
 # Clone the repository
 git clone https://github.com/antoniocostabr/pymail.git
-cd email-sender
+cd pymail
 
 # Install in development mode
 pip install -e .
@@ -33,7 +33,7 @@ pip install -e ".[dev]"
 ### From PyPI (when published)
 
 ```bash
-pip install gmail-email-sender
+pip install pymail
 ```
 
 ## Gmail Setup
@@ -331,7 +331,7 @@ If you encounter any issues or have questions:
 
 1. Check the [Common Issues](#common-issues--solutions) section
 2. Look at the [examples](examples/) for usage patterns
-3. Open an issue on [GitHub](https://github.com/antoniocostabr/email-sender/issues)
+3. Open an issue on [GitHub](https://github.com/antoniocostabr/pymail/issues)
 
 ## Changelog
 
