@@ -20,7 +20,7 @@ A Python package for sending emails using Gmail's SMTP server. This package prov
 
 ```bash
 # Clone the repository
-git clone https://github.com/antoniocostabr/email-sender.git
+git clone https://github.com/antoniocostabr/pymail.git
 cd email-sender
 
 # Install in development mode
