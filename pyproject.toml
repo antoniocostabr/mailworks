@@ -3,19 +3,19 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pymail"
+name = "mailworks"
 dynamic = ["version"]
 description = "A Python package for sending emails using Gmail SMTP"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "MIT"
+keywords = ["gmail", "email", "smtp", "send", "python"]
 authors = [
-    {name = "Antonio Costa", email = "your.email@example.com"}
+    {name = "Antonio Costa", email = "antoniocostabr@gmail.com"}
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Topic :: Communications :: Email",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -36,10 +36,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/antoniocostabr/pymail"
-Repository = "https://github.com/antoniocostabr/pymail"
-"Bug Reports" = "https://github.com/antoniocostabr/pymail/issues"
-Documentation = "https://github.com/antoniocostabr/pymail#readme"
+Homepage = "https://github.com/antoniocostabr/mailworks"
+Repository = "https://github.com/antoniocostabr/mailworks"
+"Bug Reports" = "https://github.com/antoniocostabr/mailworks/issues"
+Documentation = "https://github.com/antoniocostabr/mailworks#readme"
 
 [tool.setuptools.dynamic]
 version = {attr = "email_sender.__version__"}

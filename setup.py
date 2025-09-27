@@ -18,14 +18,14 @@ def get_version():
     return "0.1.0"
 
 setup(
-    name="gmail-email-sender",
+    name="mailworks",
     version=get_version(),
     author="Antonio Costa",
-    author_email="your.email@example.com",
+    author_email="antoniocostabr@gmail.com",
     description="A Python package for sending emails using Gmail SMTP",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/antoniocostabr/email-sender",
+    url="https://github.com/antoniocostabr/mailworks",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -52,10 +52,9 @@ setup(
             "mypy>=0.950",
         ],
     },
-    keywords="gmail email smtp send python",
     project_urls={
-        "Bug Reports": "https://github.com/antoniocostabr/email-sender/issues",
-        "Source": "https://github.com/antoniocostabr/email-sender",
-        "Documentation": "https://github.com/antoniocostabr/email-sender#readme",
+        "Bug Reports": "https://github.com/antoniocostabr/mailworks/issues",
+        "Source": "https://github.com/antoniocostabr/mailworks",
+        "Documentation": "https://github.com/antoniocostabr/mailworks#readme",
     },
 )
