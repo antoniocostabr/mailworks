@@ -1,10 +1,12 @@
 # MailWorks
 
-A Python package for sending emails using Gmail's SMTP server. This package provides a simple, secure, and reliable way to send emails through Gmail with support for HTML content, attachments, and multiple recipients.
+A Python package for sending emails using any SMTP server with STARTTLS support. This package provides a simple, secure, and reliable way to send emails through any email provider including Gmail, Outlook, Yahoo, and more. Defaults to Gmail for convenience.
 
 ## Features
 
-- ✅ Send emails via Gmail SMTP
+- ✅ **Universal SMTP Support** - Works with any SMTP provider (Gmail, Outlook, Yahoo, ProtonMail, etc.)
+- ✅ **STARTTLS Security** - Secure email transmission with TLS encryption
+- ✅ **Gmail Defaults** - Pre-configured for Gmail, works out of the box
 - ✅ Support for plain text and HTML emails
 - ✅ File attachments
 - ✅ Multiple recipients
@@ -13,6 +15,7 @@ A Python package for sending emails using Gmail's SMTP server. This package prov
 - ✅ Connection testing
 - ✅ Comprehensive error handling
 - ✅ No external dependencies (uses Python standard library only)
+- ✅ Backward compatibility (GmailSender alias available)
 
 ## Installation
 
@@ -36,9 +39,25 @@ pip install -e ".[dev]"
 pip install mailworks
 ```
 
-## Gmail Setup
+## Supported Email Providers
 
-Before using this package, you need to set up Gmail App Passwords:
+MailWorks supports any email provider that offers SMTP with STARTTLS encryption:
+
+| Provider | SMTP Server | Port | Notes |
+|----------|-------------|------|-------|
+| **Gmail** | smtp.gmail.com | 587 | Default configuration |
+| **Outlook/Hotmail** | smtp-mail.outlook.com | 587 | Microsoft email services |
+| **Yahoo** | smtp.mail.yahoo.com | 587 | Requires app password |
+| **ProtonMail** | mail.protonmail.ch | 587 | Secure email provider |
+| **Zoho** | smtp.zoho.com | 587 | Business email |
+| **SendGrid** | smtp.sendgrid.net | 587 | Email delivery service |
+| **Amazon SES** | email-smtp.region.amazonaws.com | 587 | AWS email service |
+| **Internal/Corporate** | mail.company.com | 25/587 | No authentication required |
+| **Custom** | your.smtp.server | 587 | Any SMTP server with STARTTLS |
+
+## Gmail Setup (if using Gmail)
+
+For Gmail users, you need to set up App Passwords:
 
 ### Step 1: Enable 2-Factor Authentication
 
@@ -56,17 +75,17 @@ Before using this package, you need to set up Gmail App Passwords:
 
 ## Quick Start
 
-### Basic Usage
+### Basic Usage (Gmail - Default)
 
 ```python
-from email_sender import GmailSender
+from mailworks import MailSender
 
-# Method 1: Using environment variables
+# Using environment variables (Gmail defaults)
 # Set environment variables:
-# export GMAIL_EMAIL="your.email@gmail.com"
-# export GMAIL_PASSWORD="your_app_password"
+# export EMAIL="your.email@gmail.com"
+# export PASSWORD="your_app_password"
 
-sender = GmailSender()
+sender = MailSender()
 
 # Send a simple email
 success = sender.send_simple_email(
@@ -79,16 +98,59 @@ if success:
     print("Email sent successfully!")
 ```
 
-### Advanced Usage
+### Using Other Email Providers
 
 ```python
-from email_sender import GmailSender
+from mailworks import MailSender
 
-# Method 2: Direct credentials
-sender = GmailSender(
-    email="your.email@gmail.com",
-    password="your_app_password"
+# Outlook/Hotmail
+sender = MailSender(
+    email="your.email@outlook.com",
+    password="your_password",
+    smtp_server="smtp-mail.outlook.com",
+    smtp_port=587
 )
+
+# Yahoo
+sender = MailSender(
+    email="your.email@yahoo.com",
+    password="your_app_password",
+    smtp_server="smtp.mail.yahoo.com",
+    smtp_port=587
+)
+
+# Custom SMTP server
+sender = MailSender(
+    email="your.email@yourdomain.com",
+    password="your_password",
+    smtp_server="mail.yourdomain.com",
+    smtp_port=587
+)
+```
+
+### Internal/Corporate SMTP Servers (No Authentication)
+
+For internal corporate SMTP servers that don't require authentication:
+
+> **⚠️ Security Note**: Authentication is enabled by default for security. Only disable it (`auth_required=False`) for trusted internal SMTP servers within your corporate network.
+
+```python
+from mailworks import MailSender
+
+# Corporate SMTP server without authentication
+sender = MailSender(
+    email="noreply@company.com",
+    smtp_server="mail.company.com",
+    smtp_port=25,  # Common for internal servers
+    auth_required=False  # Disable authentication
+)
+
+# Environment variables approach
+# export EMAIL="noreply@company.com"
+# export SMTP_SERVER="mail.company.com"
+# export SMTP_PORT="25"
+# export AUTH_REQUIRED="false"
+sender = MailSender()
 
 # Send HTML email with attachments to multiple recipients
 success = sender.send_email(
@@ -109,46 +171,62 @@ success = sender.send_email(
 
 ## Configuration Options
 
-### 1. Environment Variables
+### 1. Environment Variables (Recommended)
 
 Set these environment variables:
 
 ```bash
-export GMAIL_EMAIL="your.email@gmail.com"
-export GMAIL_PASSWORD="your_app_password"
-export GMAIL_SMTP_SERVER="smtp.gmail.com"  # Optional
-export GMAIL_SMTP_PORT="587"               # Optional
+# Required
+export EMAIL="your.email@anyprovider.com"
+export PASSWORD="your_app_password"  # Not required if AUTH_REQUIRED=false
+
+# Optional (defaults to Gmail if not specified)
+export SMTP_SERVER="smtp.anyprovider.com"
+export SMTP_PORT="587"
+export AUTH_REQUIRED="true"  # Set to "false" for servers without authentication
 ```
 
 ### 2. Configuration File
 
-Create a config file (e.g., `gmail_config.txt`):
+Create a config file (e.g., `email_config.txt`):
 
 ```
-GMAIL_EMAIL=your.email@gmail.com
-GMAIL_PASSWORD=your_app_password
-GMAIL_SMTP_SERVER=smtp.gmail.com
-GMAIL_SMTP_PORT=587
+EMAIL=your.email@anyprovider.com
+PASSWORD=your_app_password
+SMTP_SERVER=smtp.anyprovider.com
+SMTP_PORT=587
+AUTH_REQUIRED=true
 ```
 
 Use it in your code:
 
 ```python
-from email_sender.config import ConfigManager
+from mailworks.config import ConfigManager
 
-config_manager = ConfigManager.from_file("gmail_config.txt")
-sender = GmailSender(
+config_manager = ConfigManager.from_file("email_config.txt")
+sender = MailSender(
     email=config_manager.config.email,
-    password=config_manager.config.password
+    password=config_manager.config.password,
+    smtp_server=config_manager.config.smtp_server,
+    smtp_port=config_manager.config.smtp_port
 )
 ```
 
 ### 3. Direct Parameters
 
 ```python
-from email_sender import GmailSender
+from mailworks import MailSender
 
-sender = GmailSender(
+# Any SMTP provider
+sender = MailSender(
+    email="your.email@anyprovider.com",
+    password="your_password",
+    smtp_server="smtp.anyprovider.com",
+    smtp_port=587
+)
+
+# Gmail (using defaults)
+sender = MailSender(
     email="your.email@gmail.com",
     password="your_app_password"
 )
@@ -156,16 +234,19 @@ sender = GmailSender(
 
 ## API Reference
 
-### GmailSender Class
+### MailSender Class
 
 #### Constructor
 
 ```python
-GmailSender(email=None, password=None)
+MailSender(email=None, password=None, smtp_server=None, smtp_port=None, auth_required=None)
 ```
 
-- `email` (str, optional): Gmail email address. If not provided, reads from `GMAIL_EMAIL` environment variable.
-- `password` (str, optional): Gmail app password. If not provided, reads from `GMAIL_PASSWORD` environment variable.
+- `email` (str, optional): Email address. If not provided, reads from `EMAIL` environment variable.
+- `password` (str, optional): Email password/app password. If not provided, reads from `PASSWORD` environment variable. Not required if `auth_required=False`.
+- `smtp_server` (str, optional): SMTP server address. If not provided, reads from `SMTP_SERVER` environment variable or defaults to Gmail.
+- `smtp_port` (int, optional): SMTP port number. If not provided, reads from `SMTP_PORT` environment variable or defaults to 587.
+- `auth_required` (bool, optional): Whether SMTP authentication is required. **Defaults to `True` for security**. If not provided, reads from `AUTH_REQUIRED` environment variable or defaults to `True`. Set to `False` only for trusted internal SMTP servers.
 
 #### Methods
 
@@ -195,14 +276,24 @@ Send a simple text email to a single recipient.
 
 ##### `test_connection()`
 
-Test the connection to Gmail SMTP server.
+Test the connection to the configured SMTP server.
 
 **Returns:** `bool` - True if connection successful
+
+### GmailSender Class (Backward Compatibility)
+
+For backward compatibility, `GmailSender` is available as an alias to `MailSender`:
+
+```python
+from mailworks import GmailSender  # Same as MailSender
+
+sender = GmailSender(email="your@gmail.com", password="app_password")
+```
 
 ### Exception Classes
 
 - `EmailSenderError`: Base exception class
-- `AuthenticationError`: Raised when Gmail authentication fails
+- `AuthenticationError`: Raised when SMTP authentication fails
 - `SendError`: Raised when email sending fails
 - `ConfigurationError`: Raised when configuration is invalid
 
@@ -212,30 +303,32 @@ See the `examples/` directory for complete working examples:
 
 - `basic_example.py`: Simple email sending using environment variables
 - `advanced_example.py`: HTML emails with attachments and multiple recipients
+- `smtp_providers_example.py`: Examples for different email providers
+- `internal_smtp_example.py`: Using internal/corporate SMTP servers without authentication
 - `config_example.py`: Different configuration methods
 
 ## Error Handling
 
 ```python
-from email_sender import GmailSender, AuthenticationError, SendError
+from mailworks import MailSender, AuthenticationError, SendError
 
 try:
-    sender = GmailSender()
+    sender = MailSender()
     sender.test_connection()
-    
+
     success = sender.send_simple_email(
         to_email="recipient@example.com",
         subject="Test Email",
         message="Hello, World!"
     )
-    
+
 except AuthenticationError as e:
     print(f"Authentication failed: {e}")
-    print("Check your email and app password")
-    
+    print("Check your email and password")
+
 except SendError as e:
     print(f"Failed to send email: {e}")
-    
+
 except Exception as e:
     print(f"Unexpected error: {e}")
 ```
@@ -270,7 +363,7 @@ except Exception as e:
 - Check your internet connection
 - Ensure port 587 is not blocked by your firewall
 - Try using a different network
-- Verify Gmail SMTP settings
+- Verify SMTP server settings for your provider
 
 ### File Attachment Issues
 
@@ -278,8 +371,38 @@ except Exception as e:
 
 **Solutions**:
 - Check that file paths exist and are accessible
-- Ensure files are not too large (Gmail has a 25MB limit)
+- Ensure files are not too large (most providers have limits like 25MB for Gmail)
 - Verify file permissions
+
+## Migration Guide
+
+### From v1.x (GmailSender only)
+
+If you were using the old Gmail-only version:
+
+```python
+# Old way (still works)
+from mailworks import GmailSender
+sender = GmailSender(email="user@gmail.com", password="password")
+
+# New recommended way
+from mailworks import MailSender
+sender = MailSender(email="user@gmail.com", password="password")
+```
+
+### Environment Variables
+
+```bash
+# Old variables (still supported for backward compatibility)
+export GMAIL_EMAIL="your.email@gmail.com"
+export GMAIL_PASSWORD="your_app_password"
+
+# New recommended variables
+export EMAIL="your.email@anyprovider.com"
+export PASSWORD="your_app_password"
+export SMTP_SERVER="smtp.anyprovider.com"  # Optional
+export SMTP_PORT="587"                     # Optional
+```
 
 ## Development
 
@@ -287,8 +410,8 @@ except Exception as e:
 
 ```bash
 # Set your credentials
-export GMAIL_EMAIL="your.email@gmail.com"
-export GMAIL_PASSWORD="your_app_password"
+export EMAIL="your.email@anyprovider.com"
+export PASSWORD="your_app_password"
 
 # Run examples
 python examples/basic_example.py
@@ -306,11 +429,41 @@ pip install -e ".[dev]"
 pytest
 
 # Code formatting
-black email_sender/
+black mailworks/
 black examples/
 
 # Type checking
-mypy email_sender/
+mypy mailworks/
+```
+
+## What's New in v2.0
+
+🎉 **Universal SMTP Support**: No longer limited to Gmail! Now works with any email provider.
+
+### Key Improvements:
+
+- ✅ **Any SMTP Provider**: Gmail, Outlook, Yahoo, ProtonMail, custom servers, etc.
+- ✅ **Clean Package Name**: `mailworks` instead of `email_sender`
+- ✅ **Better Class Names**: `MailSender` instead of `GmailSender`
+- ✅ **Simplified Configuration**: Generic environment variables (`EMAIL`, `PASSWORD`)
+- ✅ **Backward Compatible**: Existing code continues to work
+- ✅ **Enhanced Documentation**: Comprehensive examples for all providers
+
+### Quick Comparison:
+
+```python
+# v1.x - Gmail only
+from email_sender import GmailSender
+sender = GmailSender(email="user@gmail.com", password="password")
+
+# v2.x - Any provider
+from mailworks import MailSender
+sender = MailSender(
+    email="user@outlook.com",
+    password="password",
+    smtp_server="smtp-mail.outlook.com",
+    smtp_port=587
+)
 ```
 
 ## Contributing
@@ -325,6 +478,10 @@ mypy email_sender/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes and version information.
+
 ## Support
 
 If you encounter any issues or have questions:
@@ -332,8 +489,6 @@ If you encounter any issues or have questions:
 1. Check the [Common Issues](#common-issues--solutions) section
 2. Look at the [examples](examples/) for usage patterns
 3. Open an issue on [GitHub](https://github.com/antoniocostabr/mailworks/issues)
-
-## Changelog
 
 ### v1.0.0
 - Initial release

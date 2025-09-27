@@ -1,4 +1,4 @@
-from email_sender import GmailSender
+from mailworks import MailSender
 import dotenv
 import os
 
@@ -18,7 +18,7 @@ def main():
 
     set_env_variables()
     print("Sending a simple email...")
-    sender = GmailSender()
+    sender = MailSender()
 
     success = sender.send_simple_email(
         to_email=os.getenv("TO_EMAIL", "recipient@example.com"),

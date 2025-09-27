@@ -5,10 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mailworks"
 dynamic = ["version"]
-description = "A Python package for sending emails using Gmail SMTP"
+description = "A Python package for sending emails using any SMTP server with STARTTLS support"
 readme = "README.md"
 license = "MIT"
-keywords = ["gmail", "email", "smtp", "send", "python"]
+keywords = ["email", "smtp", "send", "mail", "starttls", "python", "gmail", "outlook", "corporate", "universal"]
 authors = [
     {name = "Antonio Costa", email = "antoniocostabr@gmail.com"}
 ]
@@ -42,11 +42,11 @@ Repository = "https://github.com/antoniocostabr/mailworks"
 Documentation = "https://github.com/antoniocostabr/mailworks#readme"
 
 [tool.setuptools.dynamic]
-version = {attr = "email_sender.__version__"}
+version = {attr = "mailworks.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["email_sender*"]
+include = ["mailworks*"]
 
 [tool.black]
 line-length = 88

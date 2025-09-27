@@ -6,20 +6,30 @@ This example demonstrates:
 - Adding attachments
 - Sending to multiple recipients
 - Using direct credentials (not environment variables)
+- Working with any SMTP provider
 """
 
-from email_sender import GmailSender
+from mailworks import MailSender
 from pathlib import Path
 
 def main():
-    # Replace with your actual credentials
-    EMAIL = "your.email@gmail.com"
+    # Replace with your actual credentials and SMTP settings
+    EMAIL = "your.email@anyprovider.com"
     PASSWORD = "your_app_password"
-    
+    SMTP_SERVER = "smtp.anyprovider.com"  # Use smtp.gmail.com for Gmail
+    SMTP_PORT = 587
+
     try:
         # Create sender with direct credentials
-        sender = GmailSender(email=EMAIL, password=PASSWORD)
-        
+        sender = MailSender(
+            email=EMAIL,
+            password=PASSWORD,
+            smtp_server=SMTP_SERVER,
+            smtp_port=SMTP_PORT
+        )
+
+        print(f"Using SMTP server: {sender.smtp_server}:{sender.smtp_port}")
+
         # HTML email content
         html_content = """
         <html>
@@ -31,42 +41,44 @@ def main():
               <li>HTML formatting</li>
               <li>Multiple recipients</li>
               <li>File attachments</li>
+              <li>Universal SMTP provider support</li>
             </ul>
             <p>Best regards,<br>
             <i>Your Python Email Sender</i></p>
           </body>
         </html>
         """
-        
+
         # Plain text version (fallback)
         text_content = """
         Welcome to Email Sender!
-        
+
         This is a plain text email sent from Python.
-        
+
         Features demonstrated:
         - HTML formatting
-        - Multiple recipients  
+        - Multiple recipients
         - File attachments
-        
+        - Universal SMTP provider support
+
         Best regards,
         Your Python Email Sender
         """
-        
+
         # Multiple recipients
         recipients = [
             "recipient1@example.com",
             "recipient2@example.com"
         ]
-        
+
         # Create a sample attachment (optional)
         sample_file = Path("sample_attachment.txt")
         if not sample_file.exists():
             with open(sample_file, "w") as f:
                 f.write("This is a sample attachment created by the email sender example.")
-        
+
         print("Sending advanced email...")
-        
+
         success = sender.send_email(
             to_emails=recipients,
             subject="Advanced Email Example - HTML & Attachments",
@@ -74,17 +86,17 @@ def main():
             html_message=html_content,
             attachments=[sample_file]
         )
-        
+
         if success:
             print("✓ Advanced email sent successfully!")
             print(f"  Recipients: {', '.join(recipients)}")
             print(f"  Attachments: {sample_file.name}")
         else:
             print("✗ Failed to send email")
-            
+
     except Exception as e:
         print(f"✗ Error: {e}")
-        
+
     finally:
         # Clean up sample file
         if sample_file.exists():

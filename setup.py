@@ -11,7 +11,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 # Read version from the package
 def get_version():
-    version_file = this_directory / "email_sender" / "__init__.py"
+    version_file = this_directory / "mailworks" / "__init__.py"
     for line in version_file.read_text().splitlines():
         if line.startswith("__version__"):
             return line.split('"')[1]
@@ -22,7 +22,7 @@ setup(
     version=get_version(),
     author="Antonio Costa",
     author_email="antoniocostabr@gmail.com",
-    description="A Python package for sending emails using Gmail SMTP",
+    description="A Python package for sending emails using any SMTP server with STARTTLS support",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/antoniocostabr/mailworks",
