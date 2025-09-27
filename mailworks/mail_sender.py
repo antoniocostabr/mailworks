@@ -44,7 +44,8 @@ class MailSender:
                  password: Optional[str] = None,
                  smtp_server: Optional[str] = None,
                  smtp_port: Optional[int] = None,
-                 auth_required: Optional[bool] = None):
+                 auth_required: Optional[bool] = None,
+                 use_tls: Optional[bool] = None):
         """
         Initialize the Mail sender.
 
@@ -54,6 +55,7 @@ class MailSender:
             smtp_server: SMTP server address. If not provided, will look for SMTP_SERVER env var or default to Gmail
             smtp_port: SMTP port number. If not provided, will look for SMTP_PORT env var or default to 587
             auth_required: Whether SMTP authentication is required. If not provided, will look for AUTH_REQUIRED env var or default to True
+            use_tls: Whether to use STARTTLS encryption. If not provided, will look for USE_TLS env var or default to True
 
         Raises:
             ConfigurationError: If email is not provided or if password is missing when auth_required=True
@@ -69,6 +71,13 @@ class MailSender:
         else:
             auth_env = os.getenv('AUTH_REQUIRED', 'true').lower()
             self.auth_required = auth_env in ('true', '1', 'yes', 'on')
+
+        # Handle use_tls parameter
+        if use_tls is not None:
+            self.use_tls = use_tls
+        else:
+            tls_env = os.getenv('USE_TLS', 'true').lower()
+            self.use_tls = tls_env in ('true', '1', 'yes', 'on')
 
         if not self.email:
             raise ConfigurationError("Email is required. Provide it as parameter or set EMAIL environment variable.")
@@ -126,7 +135,9 @@ class MailSender:
 
             # Create SMTP session
             with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
-                server.starttls()  # Enable TLS encryption
+                # Enable TLS encryption if required
+                if self.use_tls:
+                    server.starttls()
 
                 # Only authenticate if required
                 if self.auth_required:
@@ -209,7 +220,9 @@ class MailSender:
         """
         try:
             with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
-                server.starttls()
+                # Enable TLS encryption if required
+                if self.use_tls:
+                    server.starttls()
 
                 # Only test authentication if required
                 if self.auth_required:

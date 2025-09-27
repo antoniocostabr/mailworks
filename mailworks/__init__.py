@@ -1,25 +1,15 @@
 """
-MailWorks - Universal Email Sender Package
+MailWorks - Universal SMTP Email Sender
 
 A Python package for sending emails using any SMTP server with STARTTLS support.
-Works with Gmail, Outlook, Yahoo, ProtonMail, and any custom SMTP provider.
-Defaults to Gmail settings for convenience.
+This package provides a simple, secure, and reliable way to send emails through
+any email provider including Gmail, Outlook, Yahoo, and more.
 """
 
 from .mail_sender import MailSender
-from .exceptions import EmailSenderError, AuthenticationError, SendError, ConfigurationError
+from .exceptions import SendError, ConfigurationError
 
-# Backward compatibility
+# Maintain backward compatibility with the old class name
 GmailSender = MailSender
 
-__version__ = "2.1.0"
-__author__ = "Antonio Costa"
-
-__all__ = [
-    "MailSender",
-    "GmailSender",  # For backward compatibility
-    "EmailSenderError",
-    "AuthenticationError",
-    "SendError",
-    "ConfigurationError"
-]
+__version__ = "2.2.0"

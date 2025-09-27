@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-09-26
+
+### Added
+- **TLS Control**: New `use_tls` parameter to control STARTTLS encryption separately from authentication
+- Environment variable `USE_TLS` to control TLS encryption
+- Enhanced documentation with TLS configuration examples
+- Support for plain text internal SMTP servers that don't support TLS
+
+### Changed
+- STARTTLS is now conditional based on `use_tls` parameter (defaults to True for security)
+- Internal server examples updated to show no-TLS configuration
+
+### Security
+- **Secure by default**: Both `auth_required=True` and `use_tls=True` by default
+- Clear documentation emphasizing security implications of disabling TLS
+
 ## [2.1.0] - 2025-09-26
 
 ### Added
@@ -12,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable `AUTH_REQUIRED` to control authentication requirements
 - `internal_smtp_example.py` example for corporate environments
 - Security warnings in documentation for no-auth configurations
+
+### Changed
+- Authentication is now conditional based on `auth_required` parameter (defaults to True for security)
 
 ### Security
 - **Secure by default**: `auth_required=True` by default - authentication required unless explicitly disabled

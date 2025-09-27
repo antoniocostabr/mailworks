@@ -130,19 +130,20 @@ sender = MailSender(
 
 ### Internal/Corporate SMTP Servers (No Authentication)
 
-For internal corporate SMTP servers that don't require authentication:
+For internal corporate SMTP servers that don't require authentication or TLS:
 
-> **⚠️ Security Note**: Authentication is enabled by default for security. Only disable it (`auth_required=False`) for trusted internal SMTP servers within your corporate network.
+> **⚠️ Security Note**: Authentication and TLS are enabled by default for security. Only disable them (`auth_required=False`, `use_tls=False`) for trusted internal SMTP servers within your corporate network.
 
 ```python
 from mailworks import MailSender
 
-# Corporate SMTP server without authentication
+# Corporate SMTP server without authentication or TLS
 sender = MailSender(
     email="noreply@company.com",
     smtp_server="mail.company.com",
     smtp_port=25,  # Common for internal servers
-    auth_required=False  # Disable authentication
+    auth_required=False,  # Disable authentication
+    use_tls=False  # Disable TLS for plain text internal servers
 )
 
 # Environment variables approach
@@ -150,6 +151,7 @@ sender = MailSender(
 # export SMTP_SERVER="mail.company.com"
 # export SMTP_PORT="25"
 # export AUTH_REQUIRED="false"
+# export USE_TLS="false"
 sender = MailSender()
 
 # Send HTML email with attachments to multiple recipients
@@ -184,6 +186,7 @@ export PASSWORD="your_app_password"  # Not required if AUTH_REQUIRED=false
 export SMTP_SERVER="smtp.anyprovider.com"
 export SMTP_PORT="587"
 export AUTH_REQUIRED="true"  # Set to "false" for servers without authentication
+export USE_TLS="true"  # Set to "false" for plain text internal servers
 ```
 
 ### 2. Configuration File
@@ -196,6 +199,7 @@ PASSWORD=your_app_password
 SMTP_SERVER=smtp.anyprovider.com
 SMTP_PORT=587
 AUTH_REQUIRED=true
+USE_TLS=true
 ```
 
 Use it in your code:
@@ -239,7 +243,7 @@ sender = MailSender(
 #### Constructor
 
 ```python
-MailSender(email=None, password=None, smtp_server=None, smtp_port=None, auth_required=None)
+MailSender(email=None, password=None, smtp_server=None, smtp_port=None, auth_required=None, use_tls=None)
 ```
 
 - `email` (str, optional): Email address. If not provided, reads from `EMAIL` environment variable.
@@ -247,6 +251,7 @@ MailSender(email=None, password=None, smtp_server=None, smtp_port=None, auth_req
 - `smtp_server` (str, optional): SMTP server address. If not provided, reads from `SMTP_SERVER` environment variable or defaults to Gmail.
 - `smtp_port` (int, optional): SMTP port number. If not provided, reads from `SMTP_PORT` environment variable or defaults to 587.
 - `auth_required` (bool, optional): Whether SMTP authentication is required. **Defaults to `True` for security**. If not provided, reads from `AUTH_REQUIRED` environment variable or defaults to `True`. Set to `False` only for trusted internal SMTP servers.
+- `use_tls` (bool, optional): Whether to use STARTTLS encryption. **Defaults to `True` for security**. If not provided, reads from `USE_TLS` environment variable or defaults to `True`. Set to `False` only for plain text internal SMTP servers that don't support TLS.
 
 #### Methods
 

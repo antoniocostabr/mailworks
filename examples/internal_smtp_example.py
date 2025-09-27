@@ -12,14 +12,15 @@ def main():
     print("=== Internal SMTP Server Example ===")
 
     try:
-        # Example 1: Corporate SMTP server without authentication
-        print("\n1. Using corporate SMTP server (no auth):")
+        # Example 1: Corporate SMTP server without authentication or TLS
+        print("\n1. Using corporate SMTP server (no auth, no TLS):")
 
         sender = MailSender(
             email="noreply@company.com",  # Sender email
             smtp_server="mail.company.com",  # Internal SMTP server
             smtp_port=25,  # Often port 25 for internal servers
-            auth_required=False  # No authentication needed
+            auth_required=False,  # No authentication needed
+            use_tls=False  # No TLS encryption for internal plain text servers
         )
 
         print(f"✓ Configured sender: {sender.email}")
